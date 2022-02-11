@@ -45,7 +45,6 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
             self.click(540,690)
             self.mouse_move(650,690)
 
-    #after exit re register handle
     def find_match(self):
         #Check if "Find match" button is clickable
         if self.pixel_matches_color((540,663),(5,150,170)):
@@ -97,10 +96,6 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
         elif self.stages[self.nStage] == "Accept match":
             if self.accept_match():
                 self.stage_increase()
-
-        #elif self.stages[self.nStage] == "Ingame":
-        #    if self.detect_ingame():
-        #        self.stage_increase()
         elif self.stages[self.nStage] == "Exit":
             if self.exit_game():
                 self.stage_increase()
@@ -114,7 +109,6 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
             self.accept_match()
         elif self.stages[self.cStage] == "Ingame":
             pass
-            #self.detect_ingame()
         elif self.stages[self.cStage] == "Exit":
             self.exit_game()
         elif self.stages[self.cStage] == "Play again":
@@ -123,7 +117,6 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
 if __name__ == "__main__":
     x = TFT_Bot()
     x.start()
-    #x.accept_match()
     start = time.time()
     while True:
         x.game_loop()
