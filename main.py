@@ -17,6 +17,8 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
         self.stages = ["Find match", "Accept match", "Ingame", "Exit", "Play again"]
         self.cStage = 0
         self.nStage = 1
+        self.last_action = time.time()
+        self.length = 600
 
     def start(self):
         if not self.is_client_open():
@@ -29,6 +31,20 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
     def stage_increase(self):
         self.cStage = self.nStage
         self.nStage = (self.nStage +1) % 5
+        self.last_action = time.time()
+    
+    def inactive(self):
+        return self.last_action + self.length < time.time()
+
+    def reset(self):
+        self.cStage = 0
+        self.nStage = 1
+        self.last_action = time.time()
+        self.kill_client()
+        while self.is_client_open():
+            time.sleep(1)
+        self.start()
+
 
     def stage_print(self):
         print("Current stage: ", self.stages[self.cStage], "Next stage: ", self.stages[self.nStage])
@@ -123,6 +139,9 @@ if __name__ == "__main__":
         if time.time()- start > 60:
             start = time.time()
             x.stage_print()
+        if x.inactive():
+            print("Time from last action:", time.time()-x.last_action)
+            x.reset()
     
     
 
