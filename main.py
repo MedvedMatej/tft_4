@@ -30,11 +30,11 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
 
     def stage_increase(self):
         self.cStage = self.nStage
-        self.nStage = (self.nStage +1) % 5
+        self.nStage = (self.nStage +1) % len(self.stages)
         self.last_action = time.time()
     
     def inactive(self):
-        return self.last_action + self.length < time.time()
+        return self.last_action + self.length < time.time() and not self.stages[self.cStage] == "Ingame"
 
     def reset(self):
         self.cStage = 0
@@ -45,7 +45,6 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
             time.sleep(1)
         self.start()
 
-
     def stage_print(self):
         print("Current stage: ", self.stages[self.cStage], "Next stage: ", self.stages[self.nStage])
 
@@ -53,20 +52,20 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
         #Check play button
         if self.pixel_matches_color((120,26),(7,177,178),10):
             print("Opening TFT NORMAL lobby.")
-            self.click(120,35)
+            self.area_click((75,30,170,55))
             time.sleep(0.5)
             #Click TFT, Normal, Confirm
-            self.click(625,210)
-            self.click(580,515)
-            self.click(540,690)
-            self.mouse_move(650,690)
+            self.area_click((580,180,670,270))
+            self.area_click((540,514,620,520))
+            self.area_click((470,680,610,697))
+            self.area_mouse_move((800,600,1000,700)) #(800,600,1000,700)
 
     def find_match(self):
         #Check if "Find match" button is clickable
         if self.pixel_matches_color((540,663),(5,150,170)):
-                self.click(600,675)
+                self.area_click((470,667,610,690))
                 print('In queue.')
-                self.mouse_move(750,675)
+                self.area_mouse_move((800,600,1000,700))
                 return True
 
     def accept_match(self):
@@ -80,8 +79,8 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
         #Check for accept button
         if self.pixel_matches_color((700,535),(9, 194, 181)): #700,535 | 9 194 181
             print("Accepting match.")
-            self.click(650,550)
-            self.mouse_move(800,550)
+            self.area_click((560,540,720,565))
+            self.area_mouse_move((800,600,1000,700))
             return True
 
     def exit_game(self):
@@ -94,15 +93,18 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
         #Check if exit button is on screen
         if self.pixel_matches_color((740,540),(8,65,83),False) and self.pixel_matches_color((920,540),(8,65,83),False):
             print("Exiting game.")
-            self.click(780,550,False)
+            self.area_click((740,540,920,560), False)
             time.sleep(0.3)
-            self.click(780,550,False)
+            self.area_click((740,540,920,560), False)
+            #self.click(780,550,False)
+            #time.sleep(0.3)
+            #self.click(780,550,False)
 
     def play_again(self):
         if self.pixel_matches_color((540,670),(5,150,170)):
-                self.click(600,675)
+                self.area_click((470,667,610,690))
                 print('Play again.')
-                self.mouse_move(750,675)
+                self.area_mouse_move((800,600,1000,700))
                 return True
 
     def game_loop(self):
