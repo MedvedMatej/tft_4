@@ -4,6 +4,7 @@ from Mouse import Mouse
 import json
 import time
 import pyautogui
+import random
 
 class TFT_Bot(Client_Actions, Vision, Mouse):
     def __init__(self):
@@ -19,6 +20,7 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
         self.nStage = 1
         self.last_action = time.time()
         self.length = 600
+        self.champions = "Yordle"
 
     def start(self):
         if not self.is_client_open():
@@ -96,9 +98,6 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
             self.area_click((740,540,920,560), False)
             time.sleep(0.3)
             self.area_click((740,540,920,560), False)
-            #self.click(780,550,False)
-            #time.sleep(0.3)
-            #self.click(780,550,False)
 
     def play_again(self):
         if self.pixel_matches_color((540,670),(5,150,170)):
@@ -106,6 +105,14 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
                 print('Play again.')
                 self.area_mouse_move((800,600,1000,700))
                 return True
+
+    def ingame(self):
+        img = self.screen_shot()
+        locations = self.locateAllOnScreen("Champions/"+ self.champions+".png",img)
+        for x, y in locations:
+            self.area_click((x+10,y-40,x+150,y+40),False)
+            time.sleep(0.3 + random.random())
+        time.sleep(0.5)
 
     def game_loop(self):
         if self.stages[self.nStage] == "Find match":
@@ -126,7 +133,7 @@ class TFT_Bot(Client_Actions, Vision, Mouse):
         elif self.stages[self.cStage] == "Accept match":
             self.accept_match()
         elif self.stages[self.cStage] == "Ingame":
-            pass
+            self.ingame()
         elif self.stages[self.cStage] == "Exit":
             self.exit_game()
         elif self.stages[self.cStage] == "Play again":
